@@ -15,7 +15,16 @@ class Users(models.Model):
     def __str__(self):
         return f'{self.fam}{self.name}{self.otc}'
     
+class Coords(models.Model):
+    latitude = models.FloatField(verbose_name='Широта')
+    longitude = models.FloatField(verbose_name='Долгота')
+    height = models.IntegerField(verbose_name='Высота')
 
+    class Meta:
+        verbose_name = 'Координаты'
+        verbose_name_plural = 'Координаты'
+    def __str__(self):
+        return f'Широта: {self.latitude} Долгота: {self.longitude} Высота: {self.height}'
 
 
 LEVELS = [
@@ -54,6 +63,7 @@ class Pass(models.Model):
     user = models.ForeignKey(Users, on_delete=models.CASCADE, verbose_name='Турист')
     date_added = models.DateTimeField(default=timezone.now, verbose_name='Дата добавления')
     status = models.CharField(max_length=2, choices=STATUS, default='NW', verbose_name='Статус записи')
+    coords = models.OneToOneField(Coords, on_delete=models.CASCADE)
     level = models.ForeignKey(Levels, on_delete=models.CASCADE, verbose_name='Уровень сложности')
     beauty_title = models.CharField(verbose_name='Тип объекта')
     title = models.CharField(verbose_name='Название объекта')
@@ -68,17 +78,6 @@ class Pass(models.Model):
         return f'{self.pk} {self.beauty_title}{self.status}'
 
 
-class Coords(models.Model):
-    pass_id = models.ForeignKey(Pass, on_delete=models.CASCADE)
-    latitude = models.FloatField(verbose_name='Широта')
-    longitude = models.FloatField(verbose_name='Долгота')
-    height = models.IntegerField(verbose_name='Высота')
-
-    class Meta:
-        verbose_name = 'Координаты'
-        verbose_name_plural = 'Координаты'
-    def __str__(self):
-        return f'Широта: {self.latitude} Долгота: {self.longitude} Высота: {self.height}'
 class PassImages(models.Model):
     pass_id = models.ForeignKey(Pass, on_delete=models.CASCADE, related_name='images')
     image_id = models.ImageField(upload_to='images/', blank=True)

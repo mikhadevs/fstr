@@ -51,7 +51,7 @@ class PassSerializer(WritableNestedModelSerializer):
     status = 'new'
     user = UsersSerializer()
     date_added = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S', read_only=True)
-    #coord = CoordsSerializer()
+    coords = CoordsSerializer()
     level = LevelsSerializer()
     images = PassImagesSerializer()
     class Meta:
@@ -60,7 +60,7 @@ class PassSerializer(WritableNestedModelSerializer):
             'id',
             'user',
             'date_added',
-            #'coord',
+            'coords',
             'level',
             'beauty_title',
             'title',
