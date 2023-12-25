@@ -48,7 +48,6 @@ class PassImagesSerializer(serializers.ModelSerializer):
         verbose_name = 'Фотография(и)'
 
 class PassSerializer(WritableNestedModelSerializer):
-    status = 'new'
     user = UsersSerializer()
     date_added = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S', read_only=True)
     coords = CoordsSerializer()
@@ -58,6 +57,7 @@ class PassSerializer(WritableNestedModelSerializer):
         model = Pass
         fields = [
             'id',
+            'status',
             'user',
             'date_added',
             'coords',
