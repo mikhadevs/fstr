@@ -68,6 +68,25 @@ class PassSerializer(WritableNestedModelSerializer):
             'connect',
             'images'
         ]
-
+        read_only_fields = ['status']
+        filterset_fields = ['email']
         verbose_name = 'Перевал'
+
+    def validate(self, data):
+        if self.instance is not None:
+            turist = self.instance.user
+            data_turist = data.get('users')
+            validating_fields = [
+                turist.email != data_turist['email'] ,
+                turist.fam != data_turist['fam'],
+                turist.name != data_turist['name'],
+                turist.otc != data_turist['otc'],
+                turist.phone != data_turist['phone']
+            ]
+            if data_turist is not None and any(validating_fields):
+                raise serializers.ValidationError(
+                    {'E-mail,ФИО и номер телефона изменить нельзя! '}
+                )
+        return data
+
 
