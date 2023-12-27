@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'add_pass',
     'rest_framework',
     'django_filters',
+    'drf_spectacular',
+    'drf_spectacular_sidecar',
 ]
 
 MIDDLEWARE = [
@@ -77,7 +79,7 @@ WSGI_APPLICATION = 'the_pass.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
+#для локального подключения
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -88,6 +90,17 @@ DATABASES = {
         'PORT': os.getenv('FSTR_DB_PORT'),
     }
 }
+#для PythonAnywhere
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': os.getenv('FSTR_DB_NAME'),
+#         'USER': os.getenv('FSTR_DB_LOGIN'),
+#         'PASSWORD': os.getenv('FSTR_DB_PASS'),
+#         'HOST': os.getenv('FSTR_DB_HOST'),
+#         'PORT': os.getenv('FSTR_DB_PORT'),
+#     }
+# }
 
 
 # Password validation
@@ -136,8 +149,22 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SITE_ID = 1
 
 REST_FRAMEWORK = {
+   'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.AllowAny'],
    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-   'PAGE_SIZE': 20
+   'PAGE_SIZE': 20,
+
 }
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Pass API",
+    "DESCRIPTION": 'Документация по API',
+    "VERSION": "0.0.3",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "SWAGGER_UI_SETTINGS": {
+        "filter": True,
+    },
+    "COMPONENT_SPLIT_REQUEST": True
+}
+

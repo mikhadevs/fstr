@@ -1,6 +1,4 @@
-#import django_filters.rest_framework
 import django_filters
-from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status, generics
 from rest_framework.response import Response
 from django.http import JsonResponse
@@ -28,7 +26,8 @@ class PassViewSet(viewsets.ModelViewSet):
     queryset = Pass.objects.all()
     serializer_class = PassSerializer
     filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
-    filter_fields = ('email')
+    filterset_fields = ('user__email',)
+
 
     def create(self, request, *args, **kwargs):
         serializer = PassSerializer(data=request.data)
@@ -77,27 +76,31 @@ class PassViewSet(viewsets.ModelViewSet):
                 return Response(
                     {
                         'state': '0',
-                        'message': f'При статусе: {Pass.get_status_display()}, редактирование невозможно.'
+                        'message': serializer.errors
                     }
                 )
+        else:
+            return Response(
+                {
+                    'state': '0',
+                    'message':f'При статусе: {Pass.get_status_display()}, редактирование невозможно.'
+                }
+            )
+
 
 class EmailView(generics.ListAPIView):
-    #queryset = Pass.objects.all()
     serializer_class = PassSerializer
-    #name = 'pass-email'
-    # filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
-    # filter_fields = ('email')
-    #filter_fields = ('users__email',)
-    #filterset_fields = ['email']
 
-
-
-
-    def get(self,request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         email = kwargs.get('email', None)
-        turist = Pass.objects.filter(user__email=email)
-        if turist:
-            data = PassSerializer(turist, many=True).data
+        if Pass.objects.filter(user__email=email):
+            data = PassSerializer(
+                Pass.objects.filter
+                (
+                    user__email=email
+                ),
+                many=True
+            ).data
         else:
             data = {'message': f'Пользователь с {email} не найден'}
         return JsonResponse(data, safe=False)
