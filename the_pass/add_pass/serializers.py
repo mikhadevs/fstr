@@ -13,6 +13,20 @@ class UsersSerializer(serializers.ModelSerializer):
             'phone'
         ]
         verbose_name = 'Турист'
+    def save(self, **kwargs):
+        self.is_valid()
+        user = Users.objects.filter(email=self.validated_data.get('email'))
+        if user.exists():
+            return user.first()
+        else:
+            new = Users.objects.create(
+                email=self.validated_data.get('email'),
+                phone=self.validated_data.get('phone'),
+                fam=self.validated_data.get('fam'),
+                name=self.validated_data.get('name'),
+                otc=self.validated_data.get('otc'),
+            )
+            return new
 
 
 class CoordsSerializer(serializers.ModelSerializer):

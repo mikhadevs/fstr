@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 
-from add_pass.views import PassViewSet,EmailView
+from add_pass.views import PassViewSet, EmailView
 
 router = routers.DefaultRouter()
 router.register(r'pass', PassViewSet)
@@ -26,6 +26,6 @@ router.register(r'pass', PassViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/submitData/', include(router.urls)),
-    path('api/submitData/user__email=<str:email>', EmailView.as_view(), name='pass-email'),
+    path('api/submitData/user__email=<str:email>', EmailView.as_view(), name='email'),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
